@@ -1,9 +1,28 @@
+import {signal} from "@preact/signals";
+import {useEffect} from "preact/hooks";
+import {getProducts} from "../api";
+
+const products = signal([]);
+
+async function fetchData () {
+	products.value = await getProducts();
+	console.log(products.value);
+}
+
 export function Home () {
+
+	useEffect(() => {
+		fetchData();
+	}, []);
+
 	return (
 		<div class="home">
-			<h1>Welcome to Preact ISO</h1>
-			<p>This is a simple example of a Preact ISO application.</p>
-			<p>You can navigate to different pages using the links above.</p>
+			<h1>Products</h1>
+			{products.value.map((product) => (
+				<div key={product.id}>
+					{product.title}
+				</div>
+			))}
 		</div>
 	);
 }
